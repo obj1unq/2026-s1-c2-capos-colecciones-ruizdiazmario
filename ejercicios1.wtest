@@ -1,0 +1,70 @@
+import capos.*
+import artefactos.*
+import castillo.*
+
+describe "Rolando encontrando objetos"{
+
+    test "Rolando encuentra la espada del destino y la recolecta" {
+        rolando.artefactosEnMochila().clear()
+        rolando.encontrarArtefacto(espada)
+        assert.equals(1, rolando.artefactosEnMochila().size())
+        assert.equals(#{espada}, rolando.artefactosEnMochila())
+    }
+
+    test "Rolando encuentra el libro de hechizos y lo recolecta" {
+        rolando.artefactosEnMochila().clear()
+        rolando.encontrarArtefacto(libro)
+        assert.equals(1, rolando.artefactosEnMochila().size())
+        assert.equals(#{libro}, rolando.artefactosEnMochila())
+    }
+
+    test "Rolando encuentra el collar divino (no lo recolecta, ya que tiene la espada y el libro encima y su capacidad es de 2)" {
+        rolando.artefactosEnMochila().clear()
+        rolando.encontrarArtefacto(espada)
+        rolando.encontrarArtefacto(libro)
+        rolando.encontrarArtefacto(collar)
+        assert.equals(2, rolando.artefactosEnMochila().size())
+        assert.equals(#{espada, libro}, rolando.artefactosEnMochila())
+    }
+}
+describe "Rolando y su castillo" {
+    test "Rolando recolectando espada, libro y collar y dejándolos en su castillo" {
+        castillo.artefactosAlmacenados().clear()
+        rolando.vaciarMochila()
+        rolando.encontrarArtefacto(espada)
+        rolando.encontrarArtefacto(libro)
+        assert.equals(2, rolando.artefactosEnMochila().size())
+        assert.equals(#{espada, libro}, rolando.artefactosEnMochila())
+        rolando.llegarAHogar()
+        assert.equals(0, rolando.artefactosEnMochila().size())
+        rolando.encontrarArtefacto(collar)
+        assert.equals(#{collar}, rolando.artefactosEnMochila())
+        rolando.llegarAHogar()
+        assert.equals(#{collar, espada, libro}, castillo.artefactosAlmacenados())
+        assert.equals(0, rolando.artefactosEnMochila().size())
+    }
+}
+
+describe "Rolando y sus posesiones" {
+    test "Rolando posee unicamente collar, espada y armadura" {
+        rolando.vaciarMochila()
+        castillo.artefactosAlmacenados().clear()
+        castillo.artefactosAlmacenados().add(collar)
+        castillo.artefactosAlmacenados().add(espada)
+        rolando.encontrarArtefacto(armadura)
+        assert.equals(#{collar, espada, armadura}, rolando.posesiones())
+    }
+}
+
+describe "Historial de los artefactos encontrados" {
+    test "description" {
+        rolando.vaciarMochila()
+        rolando.encontrarArtefacto(espada)
+        rolando.encontrarArtefacto(libro)
+        rolando.encontrarArtefacto(collar)
+        rolando.llegarAHogar()
+        rolando.encontrarArtefacto(armadura)
+        rolando.encontrarArtefacto(collar)
+        assert.equals([espada, libro, collar, armadura, collar], rolando.artefactosEncontrados())
+    }
+}
