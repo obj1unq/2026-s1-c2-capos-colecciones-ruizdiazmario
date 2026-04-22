@@ -94,6 +94,17 @@ describe "Rolando siendo poderoso" {
         rolando.agregarSiPuedeVencerAEnemigoYConquistar(astra)
         rolando.agregarSiPuedeVencerAEnemigoYConquistar(caterina)
         assert.equals(#{astra, archibaldo, caterina}, rolando.enemigosQuePuedeVencer())
-        rolando.tieneArtefactoFatalParaEnemigo(astra)
   }
+}
+
+describe "Artefactos letales" {
+    test "Tiene artefacto letal para enfrentar a Astra, pero no para enfrentar a Caterina" {
+        rolando.configurarPoderBase(15)
+        rolando.configurarCapacidad(3)
+        rolando.encontrarArtefacto(espada)
+        rolando.encontrarArtefacto(armadura)
+        rolando.encontrarArtefacto(collar)
+        assert.equals(true, rolando.tieneArtefactoFatalParaEnemigo(astra))
+        assert.equals(false, rolando.tieneArtefactoFatalParaEnemigo(caterina))
+    }
 }
