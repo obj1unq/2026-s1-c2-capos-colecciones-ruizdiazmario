@@ -1,3 +1,4 @@
+import enemigos.*
 import capos.*
 import artefactos.*
 import castillo.*
@@ -11,29 +12,88 @@ describe "Ejemplo de batalla y de poder de pelea" {
         rolando.encontrarArtefacto(collar)
         assert.equals(#{espada, armadura, collar}, rolando.artefactosEnMochila())
         assert.equals(5, rolando.poderBase())
-        assert.equals(5, espada.poder())
-        assert.equals(6, armadura.poder())
-        assert.equals(3, collar.poder())
+        assert.equals(5, espada.poder(rolando))
+        assert.equals(6, armadura.poder(rolando))
+        assert.equals(3, collar.poder(rolando))
         assert.equals(19, rolando.poder())
         rolando.batalla()
         assert.equals(6, rolando.poderBase())
-        assert.equals(3, espada.poder())
-        assert.equals(6, armadura.poder())
-        assert.equals(3, collar.poder())
+        assert.equals(3, espada.poder(rolando))
+        assert.equals(6, armadura.poder(rolando))
+        assert.equals(3, collar.poder(rolando))
         assert.equals(18, rolando.poder())
         rolando.batalla()
         assert.equals(7, rolando.poderBase())
-        assert.equals(3.5, espada.poder())
-        assert.equals(6, armadura.poder())
-        assert.equals(5, collar.poder())
+        assert.equals(3.5, espada.poder(rolando))
+        assert.equals(6, armadura.poder(rolando))
+        assert.equals(5, collar.poder(rolando))
         assert.equals(21.5, rolando.poder())
         rolando.batalla()
         assert.equals(8, rolando.poderBase())
-        assert.equals(4, espada.poder())
-        assert.equals(6, armadura.poder())
-        assert.equals(6, collar.poder())
+        assert.equals(4, espada.poder(rolando))
+        assert.equals(6, armadura.poder(rolando))
+        assert.equals(6, collar.poder(rolando))
         assert.equals(24, rolando.poder())
     }
 
-    test "Poder de Rolando con 3 Artefactos"
+    test "Poder de Rolando con 3 Artefactos" {
+        rolando.vaciarMochila()
+        rolando.configurarCapacidad(3)
+        rolando.encontrarArtefacto(espada)
+        rolando.encontrarArtefacto(armadura)
+        rolando.encontrarArtefacto(collar)
+        assert.equals(19, rolando.poder())
+    }
+}
+describe "Ejemplo de batalla con libro" {
+    test "Rolando con solo libro de hechizos con uno de cada y los otros 3 artefactos en su castillo"{
+        rolando.vaciarMochila()
+        rolando.configurarCapacidad(3)
+        rolando.encontrarArtefacto(espada)
+        rolando.encontrarArtefacto(armadura)
+        rolando.encontrarArtefacto(collar)
+        rolando.llegarAMorada()
+        assert.equals(#{espada, armadura, collar}, rolando.posesiones())
+        assert.equals(#{}, rolando.artefactosEnMochila())
+        libro.agregarHechizo(bendicion)
+        libro.agregarHechizo(invisibilidad)
+        libro.agregarHechizo(invocacion)
+        rolando.encontrarArtefacto(libro)
+        assert.equals(4, libro.poder(rolando))
+        rolando.batalla()
+        assert.equals(6, libro.poder(rolando))
+        rolando.batalla()
+        assert.equals(7, libro.poder(rolando))
+        rolando.batalla() 
+        assert.equals(0, libro.poder(rolando))
+    }
+}    
+
+describe "Ejemplo de victoria y conquista" {
+    test "Rolando vence a Archibaldo y a Astra"{
+        rolando.configurarCapacidad(3)
+        rolando.encontrarArtefacto(espada)
+        rolando.encontrarArtefacto(armadura)
+        rolando.encontrarArtefacto(collar)
+        assert.equals(19, rolando.poder())
+        assert.equals(16, archibaldo.poder())
+        rolando.agregarSiPuedeVencerAEnemigoYConquistar(archibaldo)
+        rolando.agregarSiPuedeVencerAEnemigoYConquistar(astra)
+        assert.equals(#{astra, archibaldo}, rolando.enemigosQuePuedeVencer())
+    }
+}
+
+describe "Rolando siendo poderoso" {
+  test "Rolando puede vencer a todos los enemigos" {
+        rolando.configurarPoderBase(10)
+        rolando.configurarCapacidad(3)
+        rolando.encontrarArtefacto(espada)
+        rolando.encontrarArtefacto(armadura)
+        rolando.encontrarArtefacto(collar)
+        rolando.agregarSiPuedeVencerAEnemigoYConquistar(archibaldo)
+        rolando.agregarSiPuedeVencerAEnemigoYConquistar(astra)
+        rolando.agregarSiPuedeVencerAEnemigoYConquistar(caterina)
+        assert.equals(#{astra, archibaldo, caterina}, rolando.enemigosQuePuedeVencer())
+        rolando.tieneArtefactoFatalParaEnemigo(astra)
+  }
 }

@@ -1,9 +1,7 @@
 import capos.*
+import castillo.*
 object espada {
     var usos = 0
-    var poder = 0
-
-
     method nombre() {
         return "Espada del destino"
     }
@@ -16,61 +14,14 @@ object espada {
         return usos
     }
 
-    method poder() {
+    method poder(portador) {
         return if (usos == 0) {
-            rolando.poderBase()
+            portador.poderBase()
         } else {
-            rolando.poderBase() / 2
+            portador.poderBase() / 2
         }
     }
 }    
-
-object libro {
-    var usos = 0
-    var poder = 0
-
-    method nombre() {
-        return "Libro de hechizos"
-    }
-
-    method usos() {
-        return usos
-    }
-    
-    method usar() {
-        usos = usos + 1
-    }
-
-    method poder() {
-        return poder
-    }
-}
-
-object collar {
-    var usos = 0
-    var poder = 0
-
-    method nombre() {
-        return "Collar divino"
-    }
-
-    method uso() {
-        return usos
-    }
-
-    method usar() {
-        usos = usos + 1
-    }
-
-    method poder() {
-        return if (rolando.poderBase() > 6) 
-        {
-            3 + usos
-        } else {
-            3
-        }
-    }
-}
 
 object armadura {
     var usos = 0
@@ -80,7 +31,7 @@ object armadura {
         return "Armadura de acero valyrio"
     }
 
-    method poder() {
+    method poder(portador) {
         return poder
     }
 
@@ -90,5 +41,87 @@ object armadura {
 
     method usos() {
         return usos
+    }
+}
+
+object collar {
+    var usos = 0
+
+    method nombre() {
+        return "Collar divino"
+    }
+
+    method usos() {
+        return usos
+    }
+
+    method usar() {
+        usos = usos + 1
+    }
+
+    method poder(portador) {
+        return if (portador.poderBase() > 6) 
+        {
+            3 + usos
+        } else {
+            3
+        }
+    }
+}
+
+object libro {
+    const hechizos = []
+
+    method nombre() {
+        return "Libro de hechizos"
+    }
+    
+    method usar() {
+        if (!hechizos.isEmpty()) {
+            hechizos.remove(hechizos.first())
+        }
+    }
+
+    method poder(portador) {
+        if (hechizos.isEmpty()) {
+            return 0
+        } else {
+            return hechizos.first().poder(portador)
+        }
+    }
+
+    method hechizos() {
+        return hechizos
+
+    }
+
+    method agregarHechizo(h) {
+        hechizos.add(h)
+    }
+
+    method reset() {
+        hechizos.clear()
+    }
+}
+
+object bendicion {
+    method poder(portador) {
+        return 4
+    }
+}
+
+object invisibilidad {
+    method poder(portador) {
+        return portador.poderBase()
+    }
+}
+
+object invocacion {
+    method poder(portador){
+        if (castillo.artefactosAlmacenados().isEmpty()) {
+            return 0
+        } else {
+            return portador.morada().artefactoMasPoderoso(portador).poder(portador)
+        }
     }
 }

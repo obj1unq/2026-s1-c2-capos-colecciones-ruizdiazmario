@@ -1,18 +1,19 @@
+import enemigos.*
 import artefactos.*
 import castillo.*
 object rolando {
-    var artefactosEnMochila = #{}
-    var posesiones = castillo.artefactosAlmacenados()
+    const artefactosEnMochila = #{}
     var capacidadMaxima = 2
-    var artefactosEncontrados = []
+    const artefactosEncontrados = []
     var poderBase = 5
-    var hogar = castillo
-
+    var morada = castillo
+    const enemigosQuePuedeVencer = #{}
+    const moradasQuePuedeConquistar = #{}
+    
     method encontrarArtefacto(artefacto) {
         artefactosEncontrados.add(artefacto)
         if (self.tieneEspacio()) {
             artefactosEnMochila.add(artefacto)
-            posesiones.add(artefacto)
         }
     }
 
@@ -36,21 +37,29 @@ object rolando {
         artefactosEnMochila.clear()
     }
 
-    method llegarAHogar(){
-        hogar.artefactosAlmacenados().addAll(self.artefactosEnMochila())
+    method llegarAMorada(){
+        morada.artefactosAlmacenados().addAll(self.artefactosEnMochila())
         self.vaciarMochila()
     }
 
+    method morada() {
+        return morada
+    }
+
     method posesiones() {
-        return posesiones
+        return morada.artefactosAlmacenados().union(artefactosEnMochila)
     }
 
     method poseeArtefacto(artefacto) {
-        return posesiones.any {art => art == artefacto}
+        return self.posesiones().any {art => art == artefacto}
     }
 
     method poderBase() {
         return poderBase
+    }
+
+    method configurarPoderBase(cantidad) {
+        poderBase = cantidad
     }
 
     method batalla(){
@@ -60,6 +69,46 @@ object rolando {
     }
 
     method poder() {
-        return poderBase + artefactosEnMochila.sum({a => a.poder()})
+        return poderBase + artefactosEnMochila.sum({a => a.poder(self)})
     }
+
+    method agregarSiPuedeVencerAEnemigoYConquistar(enemigo) {
+        if (self.puedeVencerAEnemigoYConquistar(enemigo)) {
+            enemigosQuePuedeVencer.add(enemigo)
+            moradasQuePuedeConquistar.add(enemigo.morada())
+        }
+    }
+
+    method puedeVencerAEnemigoYConquistar(enemigo) {
+        return self.poder() > enemigo.poder()
+    }
+
+    method esPoderoso() {
+        return (self.puedeVencerAEnemigoYConquistar(astra) && 
+                        self.puedeVencerAEnemigoYConquistar(archibaldo) &&
+                                self.puedeVencerAEnemigoYConquistar(caterina))
+    }
+
+    method enemigosQuePuedeVencer() {
+        return enemigosQuePuedeVencer
+    }
+
+    method moradasQuePuedeConquistar() {
+      return moradasQuePuedeConquistar
+    }
+
+    method tieneArtefactoFatalParaEnemigo(enemigo) {
+        const mejorArtefacto = artefactosEnMochila.max({ art => art.poder(self) })
+        return mejorArtefacto.poder(self) > enemigo.poder()
+    }
+    
+    method artefactoFatalParaEnemigo(enemigo) {
+        if (artefactosEnMochila.isEmpty()) {
+            return null
+        }
+        const mejorArtefacto = artefactosEnMochila.maxBy({ a => a.poder(self) })
+        return if (mejorArtefacto.poder(self) > enemigo.poder()) 
+            mejorArtefacto 
+        else null
+        }
 }
