@@ -1,0 +1,88 @@
+import capos.*
+import artefactos.*
+import castillo.*
+import moradas.*
+
+describe "Rolando encontrando objetos" {
+
+    test "Rolando encuentra un artefacto y lo guarda en la mochila" {
+        rolando.vaciarMochila()
+
+        rolando.encontrarArtefacto(espada)
+
+        assert.equals(1, rolando.artefactosEnMochila().size())
+        assert.equals(#{espada}, rolando.artefactosEnMochila())
+    }
+
+    test "Rolando encuentra el collar divino pero ya no tiene más capacidad de guardarlo)" {
+        rolando.vaciarMochila()
+        rolando.encontrarArtefacto(espada)
+        rolando.encontrarArtefacto(libro)
+        rolando.encontrarArtefacto(collar)
+        assert.equals(2, rolando.artefactosEnMochila().size())
+        assert.equals(#{espada, libro}, rolando.artefactosEnMochila())
+    }
+
+
+    test "Rolando no puede llevar más de su capacidad" {
+        rolando.vaciarMochila()
+
+        rolando.encontrarArtefacto(espada)
+        rolando.encontrarArtefacto(libro)
+        rolando.encontrarArtefacto(collar)
+
+        assert.equals(2, rolando.artefactosEnMochila().size())
+        assert.equals(#{espada, libro}, rolando.artefactosEnMochila())
+    }
+}
+
+describe "Rolando y su castillo" {
+
+    test "Rolando deposita sus artefactos en el castillo" {
+        castillo.vaciar()
+        rolando.vaciarMochila()
+
+        rolando.encontrarArtefacto(espada)
+        rolando.encontrarArtefacto(libro)
+
+        rolando.llegarAMorada()
+
+        assert.equals(0, rolando.artefactosEnMochila().size())
+        assert.equals(#{espada, libro}, castillo.artefactosAlmacenados())
+    }
+}
+
+describe "Rolando y sus posesiones" {
+
+    test "Rolando posee artefactos del castillo y de la mochila" {
+        rolando.vaciarMochila()
+        castillo.vaciar()
+
+        castillo.guardar(#{collar, espada})
+
+        rolando.encontrarArtefacto(armadura)
+
+        assert.equals(#{collar, espada, armadura}, rolando.posesiones())
+    }
+}
+
+describe "Historial de los artefactos encontrados" {
+
+    test "Rolando registra todos los artefactos encontrados incluso si no los puede cargar" {
+        rolando.vaciarMochila()
+
+        rolando.encontrarArtefacto(espada)
+        rolando.encontrarArtefacto(libro)
+        rolando.encontrarArtefacto(collar)
+
+        rolando.llegarAMorada()
+
+        rolando.encontrarArtefacto(armadura)
+        rolando.encontrarArtefacto(collar)
+
+        assert.equals(
+            [espada, libro, collar, armadura, collar],
+            rolando.historialArtefactos()
+        )
+    }
+}
