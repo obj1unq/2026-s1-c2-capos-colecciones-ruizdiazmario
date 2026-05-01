@@ -2,11 +2,12 @@ import enemigos.*
 import capos.*
 import artefactos.*
 import castillo.*
+import moradas.*
 
 describe "Ejemplo de batalla y de poder de pelea" {
     test "Batalla de 3 encuentros" {
         rolando.vaciarMochila()
-        rolando.configurarCapacidad(3)
+        rolando.capacidadMaxima(3)
         rolando.encontrarArtefacto(espada)
         rolando.encontrarArtefacto(armadura)
         rolando.encontrarArtefacto(collar)
@@ -38,7 +39,7 @@ describe "Ejemplo de batalla y de poder de pelea" {
 
     test "Poder de Rolando con 3 Artefactos" {
         rolando.vaciarMochila()
-        rolando.configurarCapacidad(3)
+        rolando.capacidadMaxima(3)
         rolando.encontrarArtefacto(espada)
         rolando.encontrarArtefacto(armadura)
         rolando.encontrarArtefacto(collar)
@@ -48,7 +49,7 @@ describe "Ejemplo de batalla y de poder de pelea" {
 describe "Ejemplo de batalla con libro" {
     test "Rolando con solo libro de hechizos con uno de cada y los otros 3 artefactos en su castillo"{
         rolando.vaciarMochila()
-        rolando.configurarCapacidad(3)
+        rolando.capacidadMaxima(3)
         rolando.encontrarArtefacto(espada)
         rolando.encontrarArtefacto(armadura)
         rolando.encontrarArtefacto(collar)
@@ -71,40 +72,37 @@ describe "Ejemplo de batalla con libro" {
 
 describe "Ejemplo de victoria y conquista" {
     test "Rolando vence a Archibaldo y a Astra"{
-        rolando.configurarCapacidad(3)
+        rolando.capacidadMaxima(3)
         rolando.encontrarArtefacto(espada)
         rolando.encontrarArtefacto(armadura)
         rolando.encontrarArtefacto(collar)
         assert.equals(19, rolando.poder())
         assert.equals(16, archibaldo.poder())
-        rolando.agregarSiPuedeVencerAEnemigoYConquistar(archibaldo)
-        rolando.agregarSiPuedeVencerAEnemigoYConquistar(astra)
         assert.equals(#{astra, archibaldo}, rolando.enemigosQuePuedeVencer())
+        assert.equals(#{palacioDeMarmol, torreDeMarfil},rolando.moradasConquistables())
     }
 }
 
 describe "Rolando siendo poderoso" {
   test "Rolando puede vencer a todos los enemigos" {
-        rolando.configurarPoderBase(10)
-        rolando.configurarCapacidad(3)
+        rolando.poderBase(10)
+        rolando.capacidadMaxima(3)
         rolando.encontrarArtefacto(espada)
         rolando.encontrarArtefacto(armadura)
         rolando.encontrarArtefacto(collar)
-        rolando.agregarSiPuedeVencerAEnemigoYConquistar(archibaldo)
-        rolando.agregarSiPuedeVencerAEnemigoYConquistar(astra)
-        rolando.agregarSiPuedeVencerAEnemigoYConquistar(caterina)
         assert.equals(#{astra, archibaldo, caterina}, rolando.enemigosQuePuedeVencer())
+        assert.equals(#{palacioDeMarmol, torreDeMarfil, fortalezaDeAcero},rolando.moradasConquistables())
   }
 }
 
 describe "Artefactos letales" {
     test "Tiene artefacto letal para enfrentar a Astra, pero no para enfrentar a Caterina" {
-        rolando.configurarPoderBase(15)
-        rolando.configurarCapacidad(3)
+        rolando.poderBase(15)
+        rolando.capacidadMaxima(3)
         rolando.encontrarArtefacto(espada)
         rolando.encontrarArtefacto(armadura)
         rolando.encontrarArtefacto(collar)
-        assert.equals(true, rolando.tieneArtefactoFatalParaEnemigo(astra))
-        assert.equals(false, rolando.tieneArtefactoFatalParaEnemigo(caterina))
+        assert.that(rolando.tieneArtefactoFatalPara(astra))
+        assert.notThat(rolando.tieneArtefactoFatalPara(caterina))
     }
 }

@@ -1,6 +1,8 @@
+import moradas.*
+
 object caterina {
     var poder = 28
-    var morada = "Fortaleza de Acero"
+    var morada = fortalezaDeAcero
 
     method poder() {
         return poder
@@ -13,8 +15,7 @@ object caterina {
 
 object archibaldo {
     var poder = 16
-    var morada = "Palacio de Mármol"
-
+    var morada = palacioDeMarmol
     method poder() {
         return poder
     }
@@ -26,9 +27,9 @@ object archibaldo {
 
 object astra {
     var poder = 14
-    var morada = "Torre de Marfil"
+    var morada = torreDeMarfil
 
-    method poder () {
+    method poder() {
         return poder
     }
 

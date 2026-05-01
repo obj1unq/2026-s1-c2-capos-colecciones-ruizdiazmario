@@ -1,15 +1,22 @@
 import artefactos.*
-import capos.*
+
 object castillo {
-const artefactosAlmacenados = #{}
-    
+    const artefactosAlmacenados = #{}
+
     method artefactosAlmacenados() {
         return artefactosAlmacenados
     }
 
+    method guardar(artefactos) {
+        artefactosAlmacenados.addAll(artefactos)
+    }
+
+    method vaciar() {
+        artefactosAlmacenados.clear()
+    }
+
     method artefactoMasPoderoso(portador) {
-        const artefactosSinLibro = self.artefactosAlmacenados() 
-                                        .filter({ a => a != libro })
-        return artefactosSinLibro.max({ art => art.poder(portador)})
+        return artefactosAlmacenados
+            .max({ a => a.poder(portador) })
     }
 }
